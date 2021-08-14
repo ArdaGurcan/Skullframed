@@ -1,2 +1,2 @@
-*.shader linguist-language=C#
-*.cginc linguist-language=C#
+*.shader linguist-language=C\#
+*.cginc linguist-language=C\#
