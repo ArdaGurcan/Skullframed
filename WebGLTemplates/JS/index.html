@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{{{ PRODUCT_NAME }}}</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+        }
+
+        canvas {
+            image-rendering: optimizeSpeed;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: -o-crisp-edges;
+            image-rendering: crisp-edges;
+            -ms-interpolation-mode: nearest-neighbor;
+
+        }
+    </style>
+</head>
+
+<body style="text-align: center; background-color: black;">
+    <canvas id="unity-canvas" width="{{{ WIDTH }}}" height="{{{ HEIGHT }}}"
+        style="image-rendering: pixelated; image-rendering: crisp-edges; width: {{{ WIDTH }}}px; height: {{{ HEIGHT }}}; background: {{{ BACKGROUND_FILENAME ? 'url(\'Build/' + BACKGROUND_FILENAME.replace(/'/g, '%27') + '\') center / cover' : BACKGROUND_COLOR }}}"></canvas>
+    <script src="Build/{{{ LOADER_FILENAME }}}"></script>
+    <script>
+        $(document).ready(() => {
+
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                var meta = document.createElement('meta');
+                meta.name = 'viewport';
+                meta.content =
+                    'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+                document.getElementsByTagName('head')[0].appendChild(meta);
+            }
+            createUnityInstance(document.querySelector("#unity-canvas"), {
+                dataUrl: "Build/{{{ DATA_FILENAME }}}",
+                frameworkUrl: "Build/{{{ FRAMEWORK_FILENAME }}}",
+                codeUrl: "Build/{{{ CODE_FILENAME }}}",
+#if MEMORY_FILENAME
+                memoryUrl: "Build/{{{ MEMORY_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+                symbolsUrl: "Build/{{{ SYMBOLS_FILENAME }}}",
+#endif
+                streamingAssetsUrl: "StreamingAssets",
+                companyName: "{{{ COMPANY_NAME }}}",
+                productName: "{{{ PRODUCT_NAME }}}",
+                productVersion: "{{{ PRODUCT_VERSION }}}",
+            });
+            $("#unity-canvas").draggable({
+                snap: "body",
+                snapTolerance: 0,
+                grid: [$("#unity-canvas")[0].clientWidth / 64, $("#unity-canvas")[0].clientHeight / 64],
+            })
+            gl.webkitImageSmoothingEnabled = false;
+            gl.mozImageSmoothingEnabled = false;
+            gl.imageSmoothingEnabled = false;
+            $(document).mouseup(() => $("canvas").draggable({
+                drag: function (event, ui) {
+                    return
+                }
+            }))
+        });
+    </script>
+</body>
+
+</html>
